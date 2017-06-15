@@ -1,5 +1,30 @@
 @charset "utf-8";
 
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+header {
+  margin: 0px;
+  padding: 0px;
+
+  background: #c8c8c8;
+}
+
+header h1 {
+  margin: 0px 20px;
+  padding: 10px 0px;
+
+  color: #ffffff;
+  font-size: 32pt;
+}
+
 #copy {
   margin: 0px 30px;
 
