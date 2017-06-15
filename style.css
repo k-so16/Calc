@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+#copy {
+  margin: 0px 30px;
+
+  color:       #0000ff;
+  font-family: "Courier New", monospace;
+  font-size:   10pt;
+  font-weight: bold;
+  text-align:  right;
+}
