@@ -1,5 +1,7 @@
 $(function() {
-  var expr = $('#expression');
+  var expr = $('input');
 
-  console.log(expr);
+  $("button").click(function() {
+    $('#ans').text(eval(expr.val()));
+  });
 });

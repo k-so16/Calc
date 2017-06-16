@@ -25,8 +25,25 @@ header h1 {
   font-size: 32pt;
 }
 
+form {
+  margin:  0px 0px;
+  padding: 10px 40px;
+}
+
+#ans {
+  margin: 0px;
+  padding: 5px 60px;
+
+  color:       #ff0000;
+  font-weight: bold;
+  font-size:   24pt;
+  text-decoration: underline;
+}
+
 #copy {
-  margin: 0px 30px;
+  margin: 0px;
+  padding: 0px 30px;
+  border-top: solid 1px #000000;
 
   color:       #0000ff;
   font-family: "Courier New", monospace;
