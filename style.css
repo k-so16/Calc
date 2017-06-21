@@ -30,6 +30,12 @@ form {
   padding: 10px 40px;
 }
 
+form input[type="text"] {
+  font-size: 12pt;
+  font-family: "Ricty Diminished Discord", "Courier New", monospace;
+  font-weight: bold;
+}
+
 #ans {
   margin: 0px;
   padding: 5px 60px;
