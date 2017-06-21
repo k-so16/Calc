@@ -8,70 +8,68 @@ $(function() {
 });
 
 
+var pattern = /^(\d+|\s+|[()+\-*/])/;
 function calc(e)
 {
-  var oprSt = [];  // operator stack
-  var opdSt = [];  // operand stack
+  return expr(e.replace(/\s+/g, ''));
+}
 
-  var lastOp = '';
-  var expr   = e;
-  while(expr) {
-    // get token
-    var token = expr.match(/^(\d+|\s+|[+-\/\*])/)[0];
-    if(token.match(/\d+/)) {
-      // push operand if token is number
-      opdSt.push(parseInt(token));
-    } else if(token.match(/[+-\/\*]/)) {
-      if(isReducible(lastOp, token)) {
-	var v2 = opdSt.pop();
-	var v1 = opdSt.pop();
-	opdSt.push(arith(oprSt.pop(), v1, v2));
-      }
-      oprSt.push(token);
-      lastOp = token;
-    } else if(!token.match(/\s+/)) {
-      return null;
+function expr(e)
+{
+  var val = term(e);
+  e = e.substr(val.toString().length);
+
+  var head = e.charAt(0);
+  while(head.match(/[+\-]/)) {
+    e = e.substr(1);
+    var v = term(e);
+    e = e.substr(v.toString().length);
+
+    if(head == '+') {
+      val += v;
+    } else if(head == '-') {
+      val -= v;
     }
-    // console.log(opdSt);
-    // console.log(oprSt);
-    expr = expr.replace(token, '');
+
+    head = e.charAt(0);
   }
 
-  while(oprSt.length) {
-    var v2 = opdSt.pop();
-    var v1 = opdSt.pop();
-    opdSt.push(arith(oprSt.pop(), v1, v2));
-  }
-
-  return opdSt.pop();
+  return val;
 }
 
-function isReducible(leftOp, rightOp)
+function term(e)
 {
-  switch(leftOp) {
-    case '':
-      return false;
-    case '+':
-    case '-':
-      return !rightOp.match(/^[\/\*]$/);
-    case '*':
-    case '/':
-      return true;
-    default:
-      return null;
+  var val = factor(e);
+  e = e.substr(val.toString().length);
+
+  var head = e.charAt(0);
+  while(head.match(/[*/]/)) {
+    e = e.substr(1);
+    var v = factor(e);
+    e = e.substr(v.toString().length);
+
+    if(head == '*') {
+      val *= v;
+    } else if(head == '/') {
+      val /= v;
+    }
+
+    head = e.charAt(0);
   }
+
+  return val;
 }
 
-function arith(op, v1, v2)
+function factor(e)
 {
-  switch(op) {
-    case '+':
-      return v1 + v2;
-    case '-':
-      return v1 - v2;
-    case '*':
-      return v1 * v2;
-    case '/':
-      return Math.floor(v1 / v2);
+  if(e.match(/^\d+/)) {
+    return parseInt(RegExp.lastMatch);
   }
+
+  return expr(e.replace(/^\(?(.+)\)?/, "$1"));
+}
+
+function number(e)
+{
+  return parseInt(e);
 }
