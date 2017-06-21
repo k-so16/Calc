@@ -3,7 +3,7 @@ $(function() {
 
   $("button").click(function() {
     var ans = calc(expr.val());
-    $('#ans').text((ans != null) ? ans : "Can't calclate.");
+    $('#ans').text((ans != null) ? ans : "Can't calculate.");
   });
 });
 
