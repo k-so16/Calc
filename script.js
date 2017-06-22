@@ -8,68 +8,104 @@ $(function() {
 });
 
 
-var pattern = /^(\d+|\s+|[()+\-*/])/;
 function calc(e)
 {
-  return expr(e.replace(/\s+/g, ''));
+  if(parenCheck(e)) {
+    return expr({expr : e.replace(/\s+/g, '')});
+  }
+  return null;
 }
 
-function expr(e)
+
+function expr(data)
 {
-  var val = term(e);
-  e = e.substr(val.toString().length);
+  // term ::= term ( (+|=) term )*
+  /* 
+  data.E++;
+  console.log("E.count: " + data.E);
+   */
 
-  var head = e.charAt(0);
-  while(head.match(/[+\-]/)) {
-    e = e.substr(1);
-    var v = term(e);
-    e = e.substr(v.toString().length);
+  var val = term(data);
+  // console.log("after v1: " + data.expr);
+  while(data.expr.charAt(0).match(/^[+\-]$/)) {
+    var op = data.expr.charAt(0);
+    data.expr = data.expr.replace(/^[+\-]/, '');
+    // console.log("e: " + data.expr);
 
-    if(head == '+') {
+    var v = term(data);
+    if(op == '+') {
       val += v;
-    } else if(head == '-') {
+    } else if(op == '-') {
       val -= v;
     }
-
-    head = e.charAt(0);
   }
 
   return val;
 }
 
-function term(e)
+function term(data)
 {
-  var val = factor(e);
-  e = e.substr(val.toString().length);
+  // term ::= term ( (+|=) term )*
+  /*
+  data.T++;
+  console.log("T.count: " + data.T);
+   */
 
-  var head = e.charAt(0);
-  while(head.match(/[*/]/)) {
-    e = e.substr(1);
-    var v = factor(e);
-    e = e.substr(v.toString().length);
+  var val = factor(data);
+  // console.log("after v1: " + data.expr);
+  while(data.expr.charAt(0).match(/^[/*]$/)) {
+    var op = data.expr.charAt(0);
+    data.expr = data.expr.replace(/^[/*]/, '');
+    // console.log("e: " + data.expr);
 
-    if(head == '*') {
+    var v = factor(data);
+    if(op == '*') {
       val *= v;
-    } else if(head == '/') {
+    } else if(op == '/') {
       val /= v;
     }
-
-    head = e.charAt(0);
   }
 
   return val;
 }
 
-function factor(e)
+function factor(data)
 {
-  if(e.match(/^\d+/)) {
-    return parseInt(RegExp.lastMatch);
+  // factor ::= NUMBER | (E)
+  /*
+  data.F++;
+  console.log("F.count: " + data.F);
+   */
+
+  if(data.expr.match(/^\d+/)) {
+    var num = RegExp.lastMatch;
+    data.expr = data.expr.substr(num.length);
+
+    return parseInt(num);
   }
 
-  return expr(e.replace(/^\(?(.+)\)?/, "$1"));
+  if(data.expr.charAt(0) == '(') {
+    data.expr = data.expr.substr(1);
+    console.log(data.expr);
+    var result = expr(data);
+    if(data.expr.charAt(0) != ')') {
+      return null;
+    }
+    data.expr = data.expr.substr(1);
+    return result;
+  }
+
+/*  if(data.expr.match(/^\(/)) {
+    var res = data.expr.match(/^\((.+)\)/);
+    var e = res[1];
+    data.expr = data.expr.replace(/^\((.+)\)/, '');
+    console.log("(E)->E: " + e);
+    return expr({expr: e});
+  } */
+  return null;
 }
 
-function number(e)
+function parenCheck(e)
 {
-  return parseInt(e);
+  return e.match(/\(/g).length == e.match(/\)/g).length;
 }
