@@ -10,68 +10,103 @@ $(function() {
 
 function calc(e)
 {
-  var oprSt = [];  // operator stack
-  var opdSt = [];  // operand stack
+  if(parenCheck(e)) {
+    return expr({expr : e.replace(/\s+/g, '')});
+  }
+  return null;
+}
 
-  var lastOp = '';
-  var expr   = e;
-  while(expr) {
-    // get token
-    var token = expr.match(/^(\d+|\s+|[+-\/\*])/)[0];
-    if(token.match(/\d+/)) {
-      // push operand if token is number
-      opdSt.push(parseInt(token));
-    } else if(token.match(/[+-\/\*]/)) {
-      if(isReducible(lastOp, token)) {
-	var v2 = opdSt.pop();
-	var v1 = opdSt.pop();
-	opdSt.push(arith(oprSt.pop(), v1, v2));
-      }
-      oprSt.push(token);
-      lastOp = token;
-    } else if(!token.match(/\s+/)) {
+
+function expr(data)
+{
+  // term ::= term ( (+|=) term )*
+  /* 
+  data.E++;
+  console.log("E.count: " + data.E);
+   */
+
+  var val = term(data);
+  // console.log("after v1: " + data.expr);
+  while(data.expr.charAt(0).match(/^[+\-]$/)) {
+    var op = data.expr.charAt(0);
+    data.expr = data.expr.replace(/^[+\-]/, '');
+    // console.log("e: " + data.expr);
+
+    var v = term(data);
+    if(op == '+') {
+      val += v;
+    } else if(op == '-') {
+      val -= v;
+    }
+  }
+
+  return val;
+}
+
+function term(data)
+{
+  // term ::= term ( (+|=) term )*
+  /*
+  data.T++;
+  console.log("T.count: " + data.T);
+   */
+
+  var val = factor(data);
+  // console.log("after v1: " + data.expr);
+  while(data.expr.charAt(0).match(/^[/*]$/)) {
+    var op = data.expr.charAt(0);
+    data.expr = data.expr.replace(/^[/*]/, '');
+    // console.log("e: " + data.expr);
+
+    var v = factor(data);
+    if(op == '*') {
+      val *= v;
+    } else if(op == '/') {
+      val /= v;
+    }
+  }
+
+  return val;
+}
+
+function factor(data)
+{
+  // factor ::= NUMBER | (E)
+  /*
+  data.F++;
+  console.log("F.count: " + data.F);
+   */
+
+  if(data.expr.match(/^\d+/)) {
+    var num = RegExp.lastMatch;
+    data.expr = data.expr.substr(num.length);
+
+    return parseInt(num);
+  }
+
+  if(data.expr.charAt(0) == '(') {
+    data.expr = data.expr.substr(1);
+    console.log(data.expr);
+    var result = expr(data);
+    if(data.expr.charAt(0) != ')') {
       return null;
     }
-    // console.log(opdSt);
-    // console.log(oprSt);
-    expr = expr.replace(token, '');
+    data.expr = data.expr.substr(1);
+    return result;
   }
 
-  while(oprSt.length) {
-    var v2 = opdSt.pop();
-    var v1 = opdSt.pop();
-    opdSt.push(arith(oprSt.pop(), v1, v2));
-  }
-
-  return opdSt.pop();
+/*  if(data.expr.match(/^\(/)) {
+    var res = data.expr.match(/^\((.+)\)/);
+    var e = res[1];
+    data.expr = data.expr.replace(/^\((.+)\)/, '');
+    console.log("(E)->E: " + e);
+    return expr({expr: e});
+  } */
+  return null;
 }
 
-function isReducible(leftOp, rightOp)
+function parenCheck(e)
 {
-  switch(leftOp) {
-    case '':
-      return false;
-    case '+':
-    case '-':
-      return !rightOp.match(/^[\/\*]$/);
-    case '*':
-    case '/':
-      return true;
-    default:
-      return null;
-  }
-}
-
-function arith(op, v1, v2)
-{
-  switch(op) {
-    case '+':
-      return v1 + v2;
-    case '-':
-      return v1 - v2;
-    case '*':
-      return v1 * v2;
-    case '/':
-      return Math.floor(v1 / v2);
-  }
+  console.log((e.match(/\(/g) || []).length == (e.match(/\(/g) || []).length);
+  return (e.match(/\(/g) || []).length == (e.match(/\(/g) || []).length;
 }
