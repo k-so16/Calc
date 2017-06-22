@@ -107,5 +107,6 @@ function factor(data)
 
 function parenCheck(e)
 {
-  return e.match(/\(/g).length == e.match(/\)/g).length;
+  console.log((e.match(/\(/g) || []).length == (e.match(/\(/g) || []).length);
+  return (e.match(/\(/g) || []).length == (e.match(/\(/g) || []).length;
 }
