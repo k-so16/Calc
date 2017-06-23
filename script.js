@@ -19,13 +19,13 @@ function calc(e)
 
 function expr(data)
 {
-  // term ::= term ( (+|=) term )*
-  /* 
-  data.E++;
-  console.log("E.count: " + data.E);
-   */
+  // term ::= term ( (+|-) term )*
 
   var val = term(data);
+  if(val == null) {
+    return null;
+  }
+
   // console.log("after v1: " + data.expr);
   while(data.expr.charAt(0).match(/^[+\-]$/)) {
     var op = data.expr.charAt(0);
@@ -33,6 +33,10 @@ function expr(data)
     // console.log("e: " + data.expr);
 
     var v = term(data);
+    if(v == null) {
+      return null;
+    }
+
     if(op == '+') {
       val += v;
     } else if(op == '-') {
@@ -46,12 +50,12 @@ function expr(data)
 function term(data)
 {
   // term ::= term ( (+|=) term )*
-  /*
-  data.T++;
-  console.log("T.count: " + data.T);
-   */
 
   var val = factor(data);
+  if(val == null) {
+    return null;
+  }
+
   // console.log("after v1: " + data.expr);
   while(data.expr.charAt(0).match(/^[/*]$/)) {
     var op = data.expr.charAt(0);
@@ -59,6 +63,10 @@ function term(data)
     // console.log("e: " + data.expr);
 
     var v = factor(data);
+    if(v == null) {
+      return null;
+    }
+
     if(op == '*') {
       val *= v;
     } else if(op == '/') {
@@ -72,10 +80,6 @@ function term(data)
 function factor(data)
 {
   // factor ::= NUMBER | (E)
-  /*
-  data.F++;
-  console.log("F.count: " + data.F);
-   */
 
   if(data.expr.match(/^\d+/)) {
     var num = RegExp.lastMatch;
@@ -95,18 +99,10 @@ function factor(data)
     return result;
   }
 
-/*  if(data.expr.match(/^\(/)) {
-    var res = data.expr.match(/^\((.+)\)/);
-    var e = res[1];
-    data.expr = data.expr.replace(/^\((.+)\)/, '');
-    console.log("(E)->E: " + e);
-    return expr({expr: e});
-  } */
   return null;
 }
 
 function parenCheck(e)
 {
-  console.log((e.match(/\(/g) || []).length == (e.match(/\(/g) || []).length);
   return (e.match(/\(/g) || []).length == (e.match(/\(/g) || []).length;
 }

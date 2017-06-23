@@ -25,6 +25,16 @@ header h1 {
   font-size: 32pt;
 }
 
+p.description {
+  margin: 0px 20px;
+  padding: 20px  0px 0px 5px;
+
+  color: #ff0000;
+  font-size: 14pt;
+  font-weight: bold;
+  font-style: serif;
+}
+
 form {
   margin:  0px 0px;
   padding: 10px 40px;
@@ -34,6 +44,24 @@ form input[type="text"] {
   font-size: 12pt;
   font-family: "Ricty Diminished Discord", "Courier New", monospace;
   font-weight: bold;
+}
+
+form button {
+  margin: 0px;
+  padding: 5px 10px;
+  border: solid 1px #888888;
+  border-radius: 5px;
+
+  color: #8000ff;
+  background: #ffffff;
+  font-size: 12pt;
+}
+
+form button:hover {
+  color: #7c00e0;
+  background: #e8e8e8;
+  font-style: italic;
+  text-decoration: underline;
 }
 
 #ans {
@@ -46,9 +74,18 @@ form input[type="text"] {
   text-decoration: underline;
 }
 
-#copy {
+
+footer {
   margin: 0px;
-  padding: 0px 30px;
+  padding: 0px;
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
+}
+
+#copy {
+  margin:  0px;
+  padding: 10px 30px;
   border-top: solid 1px #000000;
 
   color:       #0000ff;
